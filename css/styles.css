@@ -1,0 +1,7 @@
+.listener {
+    fill-opacity: 0;
+}
+
+.hover-dot {
+    pointer-events: none;
+}

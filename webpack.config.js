@@ -5,7 +5,7 @@ module.exports = {
     mode: 'development',
     entry: './js/main.js',
     output: {
-        path: path.resolve(__dirname, 'build'),
+        path: path.resolve(__dirname, 'dist'),
         filename: 'main.bundle.js'
     },
     module: {
@@ -16,6 +16,10 @@ module.exports = {
                 query: {
                     presets: ['es2015']
                 }
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
             }
         ]
     },

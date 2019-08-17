@@ -1,4 +1,5 @@
-import { createCircle, createLine, createSVGContainer } from './svg';
+import './../css/styles.css';
+import { makeCircle, makeLine, makeSVGContainer, makeRect } from './svg';
 import { empty } from './utils';
 
 export class FretboardDiagram {
@@ -16,28 +17,30 @@ export class FretboardDiagram {
         this.stringCount = opts.stringCount || 6;
         this.fretCount = opts.fretCount || 4;
 
-        this.dots = opts.dots || {};
+        this.dots = opts.dots || [];
+        this.drawDotOnHover = opts.drawDotOnHover || false;
 
-        const parent = document.getElementById(this.id);
+        const rootElem = document.getElementById(this.id);
 
-        if (parent == null) {
+        if (rootElem == null) {
             throw new Error(`Parent element ${this.id} is null.`);
         }
 
-        empty(parent); // in case element is being redrawn
+        empty(rootElem); // in case element is being redrawn
 
-        this.svgEl = createSVGContainer(parent, this.width, this.height);
-        this.svgEl.classList.add("fretboard-diagram");
+        this.svgElem = makeSVGContainer(rootElem, this.width, this.height);
+        this.svgElem.classList.add("fretboard-diagram");
 
         this.drawFrets();
         this.drawStrings();
         this.drawDots();
+        this.makeListeners();
     }
 
     drawFrets() {
         for (let i = 0; i < this.fretCount + 1; i++) {
             const yPos = (this.fretHeight * i) + this.yMargin;
-            createLine(this.svgEl, this.xMargin, yPos, this.width - this.xMargin, yPos);
+            makeLine(this.svgElem, this.xMargin, yPos, this.width - this.xMargin, yPos);
         }
     }
 
@@ -47,7 +50,7 @@ export class FretboardDiagram {
                 const x = (i * this.stringMargin) + this.xMargin;
                 const y = (j * this.fretHeight) + this.yMargin;
 
-                createLine(this.svgEl, x, y, x, y + this.fretHeight);
+                makeLine(this.svgElem, x, y, x, y + this.fretHeight);
             }
         }
     }
@@ -62,7 +65,7 @@ export class FretboardDiagram {
             dotRadius -= dotRadius / 4;
         }
 
-        const circle = createCircle(this.svgEl, x, y, dotRadius);
+        const circle = makeCircle(this.svgElem, x, y, dotRadius);
         circle.style.fill = dot.color ? dot.color : 'white';
 
         return circle;
@@ -86,6 +89,43 @@ export class FretboardDiagram {
         }
 
         return { x, y };
+    }
+
+    makeListeners() {
+        for (let string = 1; string < this.stringCount + 1; string++) {
+            for (let fret = 0; fret < this.fretCount + 1; fret++) {
+                const { x, y } = this.fretCoords({ string, fret });
+
+                let height = this.listenerHeight;
+                if (fret === 0) {
+                    height -= height / 3;
+                }
+
+                const listener = makeRect(
+                    this.svgElem,
+                    x - (this.listenerWidth / 2),
+                    y - (height / 2),
+                    this.listenerWidth,
+                    height
+                );
+                listener.classList.add("listener");
+
+                let dot = null;
+
+                listener.addEventListener("mouseover", () => {
+                    if (this.drawDotOnHover) {
+                        dot = this.drawDot({ string, fret });
+                        dot.classList.add("hover-dot");
+                    }
+                });
+
+                listener.addEventListener("mouseout", () => {
+                    if (dot != null) {
+                        dot.remove();
+                    }
+                });
+            }
+        }
     }
 
     get xMargin() {
@@ -116,6 +156,14 @@ export class FretboardDiagram {
         return this.fretHeight / 7;
     }
 
+    get listenerWidth() {
+        return this.dotRadius * 3;
+    }
+
+    get listenerHeight() {
+        return this.dotRadius * 7;
+    }
+
 }
 
 // const fd = new FretboardDiagram({
@@ -125,5 +173,6 @@ export class FretboardDiagram {
 //         { string: 3, fret: 0 },
 //         { string: 2, fret: 1 },
 //         { string: 1, fret: 0 }
-//     ]
+//     ],
+//     drawDotOnHover: true
 // });

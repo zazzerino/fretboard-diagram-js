@@ -11,6 +11,8 @@ export class FretboardDiagram {
 
         this.id = opts.id;
 
+        this.onClick = opts.onClick;
+
         this.width = opts.width || 200;
         this.height = opts.height || 300;
 
@@ -55,20 +57,18 @@ export class FretboardDiagram {
         }
     }
 
-    drawDot(dot) {
-        const { x, y } = this.fretCoords(dot);
+    drawDot({ string, fret }) {
+        const { x, y } = this.fretCoords({ string, fret });
 
         let dotRadius = this.dotRadius;
 
         // shrink open string dots
-        if (dot.fret === 0) {
+        if (fret === 0) {
             dotRadius -= dotRadius / 4;
         }
 
-        const circle = makeCircle(this.svgElem, x, y, dotRadius);
-        circle.style.fill = dot.color ? dot.color : 'white';
-
-        return circle;
+        const dot = makeCircle(this.svgElem, x, y, dotRadius);
+        return dot;
     }
 
     drawDots() {
@@ -124,6 +124,12 @@ export class FretboardDiagram {
                         dot.remove();
                     }
                 });
+
+                listener.addEventListener("click", () => {
+                    if (this.onClick != null) {
+                        this.onClick({ string, fret }, this);
+                    }
+                });
             }
         }
     }
@@ -174,5 +180,8 @@ export class FretboardDiagram {
 //         { string: 2, fret: 1 },
 //         { string: 1, fret: 0 }
 //     ],
-//     drawDotOnHover: true
+//     drawDotOnHover: true,
+//     onClick: (dot, inst) => { 
+//         console.log(`${dot.string} ${dot.fret} ${inst.id}`);
+//     }
 // });

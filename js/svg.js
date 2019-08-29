@@ -4,7 +4,7 @@ export function makeSVGContainer(parent, width, height) {
   const svg = document.createElementNS(svgNS, "svg");
   svg.setAttribute("width", width.toString());
   svg.setAttribute("height", height.toString());
-  svg.setAttribute("viewBox",  `0 0 ${ width } ${ height }`);
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
   parent.appendChild(svg);
   return svg;
@@ -22,13 +22,13 @@ export function makeLine(parent, x1, y1, x2, y2, color = "black") {
   return line;
 }
 
-export function makeCircle(parent, cx, cy, r, color = "black") {
+export function makeCircle(parent, cx, cy, r, color = "white") {
   const circle = document.createElementNS(svgNS, "circle");
   circle.setAttribute("cx", cx.toString());
   circle.setAttribute("cy", cy.toString());
   circle.setAttribute("r", r.toString());
-  circle.setAttribute("stroke", color);
-  circle.setAttribute("fill", "white");
+  circle.setAttribute("stroke", "black");
+  circle.setAttribute("fill", color);
 
   parent.appendChild(circle);
   return circle;
@@ -40,7 +40,7 @@ export function makeRect(parent, x, y, width, height) {
   rect.setAttribute("y", y.toString());
   rect.setAttribute("width", width.toString());
   rect.setAttribute("height", height.toString());
-//   rect.setAttribute("fill", color);
+  //   rect.setAttribute("fill", color);
 
   parent.appendChild(rect);
   return rect;

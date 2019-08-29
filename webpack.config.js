@@ -2,11 +2,13 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: './js/main.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'main.bundle.js'
+        filename: 'main.bundle.js',
+        library: 'fretboard-diagram',
+        libraryTarget: 'umd'
     },
     module: {
         rules: [
@@ -27,5 +29,5 @@ module.exports = {
         colors: true
     },
     devtool: 'source-map',
-    watch: true
+    watch: false
 };

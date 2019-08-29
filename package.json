@@ -1,8 +1,12 @@
 {
   "name": "fretboard-diagram",
-  "version": "0.0.1",
+  "version": "0.0.9",
   "description": "",
-  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zazzerino/fretboard-diagram.git"
+  },
+  "main": "dist/main.bundle.js",
   "scripts": {
     "babel": "babel --presets es2015 js/main.js -o dist/main.bundle.js",
     "start": "http-server",

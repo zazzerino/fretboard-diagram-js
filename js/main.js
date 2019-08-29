@@ -3,7 +3,6 @@ import { makeCircle, makeLine, makeSVGContainer, makeRect } from './svg';
 import { empty } from './utils';
 
 export class FretboardDiagram {
-
     constructor(opts) {
         if (opts.id == null) {
             throw new Error(`Must provide id.`);
@@ -33,6 +32,10 @@ export class FretboardDiagram {
         this.svgElem = makeSVGContainer(rootElem, this.width, this.height);
         this.svgElem.classList.add("fretboard-diagram");
 
+        this.draw();
+    }
+
+    draw() {
         this.drawFrets();
         this.drawStrings();
         this.drawDots();
@@ -57,7 +60,7 @@ export class FretboardDiagram {
         }
     }
 
-    drawDot({ string, fret }) {
+    drawDot({ string, fret, color }) {
         const { x, y } = this.fretCoords({ string, fret });
 
         let dotRadius = this.dotRadius;
@@ -67,7 +70,7 @@ export class FretboardDiagram {
             dotRadius -= dotRadius / 4;
         }
 
-        const dot = makeCircle(this.svgElem, x, y, dotRadius);
+        const dot = makeCircle(this.svgElem, x, y, dotRadius, color);
         return dot;
     }
 
@@ -175,13 +178,13 @@ export class FretboardDiagram {
 // const fd = new FretboardDiagram({
 //     id: "example-1",
 //     dots: [
-//         { string: 5, fret: 3 },
+//         { string: 5, fret: 3, color: 'limegreen' },
 //         { string: 3, fret: 0 },
 //         { string: 2, fret: 1 },
 //         { string: 1, fret: 0 }
 //     ],
 //     drawDotOnHover: true,
-//     onClick: (dot, inst) => { 
+//     onClick: (dot, inst) => {
 //         console.log(`${dot.string} ${dot.fret} ${inst.id}`);
 //     }
 // });
